@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="auth.css">
+  <title>Login / Register</title>
+</head>
+
+<body>
+
+  <form id="loginSection" class="form-container" novalidate>
+    <h2>Login</h2>
+
+    <input type="email" id="loginEmail" placeholder="Email">
+    <input type="password" id="loginPass" placeholder="Password">
+    <p id="loginError"></p>
+
+    <button type="submit">Login</button>
+    <p>Don't have an account?
+      <button type="button" id="registerBtn" class="link-btn">Register here</button>
+    </p>
+  </form>
+
+  <form id="registerSection" class="form-container hidden" novalidate>
+    <h2>Register</h2>
+
+    <input type="text" id="regName" placeholder="Full Name">
+    <input type="email" id="regEmail" placeholder="Email">
+    <input type="password" id="regPass" placeholder="Password">
+    <p id="regError"></p>
+
+    <button type="submit">Register</button>
+    <p>Already have an account?
+      <button type="button" id="loginBtn" class="link-btn">Login here</button>
+    </p>
+  </form>
+
+  <script src="auth.js"></script>
+  <script>
+    checkAlreadyLoggedIn()
+  </script>
+</body>
+
+</html>

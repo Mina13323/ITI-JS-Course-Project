@@ -1,0 +1,14 @@
+/* to hide elements (for switching between login/register) */
+.hidden {
+    display: none;
+}
+/* to make link buttons look like links */
+.link-btn {
+    background: none;
+    border: none;
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+    font: inherit;
+}
