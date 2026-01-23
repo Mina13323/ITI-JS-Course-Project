@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <nav>
+        <a href="./index.html">Home</a>
+        <a href="./categories.html">Categories</a>
+        <a href="./orders.html">Orders</a>
+    </nav>
+    <div>
+        <h1>Products</h1>
+        <button id="add-product-btn" class="add-btn">Add Product</button>
+    </div>
+    <form action="" id="product-form">
+        <div>
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name">
+            <span class="error" id="name-error"></span>
+        </div>
+        <div>
+            <label for="image">Image URL</label>
+            <input type="text" name="image">
+            <span class="error" id="image-error"></span>
+        </div>
+        <div>
+            <label for="description">Description</label>
+            <textarea name="description" rows="2"></textarea>
+            <span class="error" id="description-error"></span>
+        </div>
+        <div>
+            <label for="price">Price</label>
+            <input type="number" id="price" name="price">
+            <span class="error" id="price-error"></span>
+        </div>
+        <div>
+            <label for="stock">Stock</label>
+            <input type="number" id="stock" name="stock">
+            <span class="error" id="stock-error"></span>
+        </div>
+        <div>
+            <label>Category</label>
+            <select name="category" id="product-category">
+            </select>
+            <span class="error" id="category-error"></span>
+        </div>
+        <button type="submit">Add</button>
+        <button type="button" id="cancel-btn">Cancel</button>
+      
+    </form>
+    <table id="products-table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Image</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Category name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="products-body"></tbody>
+    </table>
+    <script type="module" src="./products.js"></script>
+</body>
+</html>

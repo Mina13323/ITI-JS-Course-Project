@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categories</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <nav>
+        <a href="./index.html">Home</a>
+        <a href="./products.html">Products</a>
+        <a href="./orders.html">Orders</a>
+  </nav>
+    <h1>Categories</h1>
+
+  <button id="add-category-btn" class="add-btn">Add Category</button>
+
+  <form id="category-form" style="display:none;">
+    <div>
+      <label>Category Name</label>
+      <input type="text" name="name">
+      <span class="error" id="category-name-error"></span>
+    </div>
+
+    <button type="submit">Add</button>
+    <button type="button" id="cancel-category-btn">Cancel</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="categories-body"></tbody>
+  </table>
+<script type="module" src="./categories.js"></script>
+</body>
+</html>

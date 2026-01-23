@@ -1,0 +1,126 @@
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f6f8;
+  color: #333;
+}
+
+nav{
+  display: flex;
+  gap: 30px;
+  width: 100%;
+  background-color: #007bff;
+  border-radius: 6px;
+}
+
+nav a{
+  text-decoration: none;
+  color: white;
+  padding: 20px;
+  font-size: 20px;
+}
+
+h1 {
+  margin-bottom: 15px;
+}
+
+
+button {
+  cursor: pointer;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: background 0.2s ease;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+button:disabled {
+  opacity: 0.5;
+  background-color: #ccc;
+  cursor: not-allowed;
+  color: black;
+}
+
+.add-btn {
+  background-color: #007bff;
+  color: white;
+  margin-bottom: 10px;
+}
+
+.edit-btn, .confirm-btn {
+  background-color: #ffc107;
+  color: #333;
+  margin-right: 5px;
+}
+
+.delete-btn, .reject-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+
+form {
+  background-color: #fff;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  display: none;
+  max-width: 400px;
+}
+
+form div {
+  margin-bottom: 10px;
+}
+
+form label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
+form input, form select {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+form span.error {
+  color: #dc3545;
+  font-size: 12px;
+}
+
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+table thead {
+  background-color: #007bff;
+  color: white;
+}
+
+table th, table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+
+
