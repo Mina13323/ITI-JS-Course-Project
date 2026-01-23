@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Browse Products</title>
+    <link rel="stylesheet" href="../Css/customer.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header>
+        <h1 class="page-title">Browse Products</h1>
+        <p class="page-subtitle">
+          Discover fresh arrivals, refine by category or budget, and save
+          favorites to your wishlist.
+        </p>
+        <p>
+          Wishlist items:
+          <span id="wishlistCount" class="wishlist-count">0</span>
+        </p>
+      </header>
+
+      <section class="filters" aria-label="Filter products">
+        <div class="filter-group">
+          <label for="categoryFilter">Category</label>
+          <select id="categoryFilter"></select>
+        </div>
+        <div class="filter-group">
+          <label for="minPrice">Min price</label>
+          <input id="minPrice" type="number" min="0" step="1" placeholder="0" />
+        </div>
+        <div class="filter-group">
+          <label for="maxPrice">Max price</label>
+          <input id="maxPrice" type="number" min="0" step="1" placeholder="100" />
+        </div>
+      </section>
+
+      <section class="products-grid" aria-live="polite"></section>
+    </main>
+
+    <script src="../JS/wishlist.js"></script>
+    <script src="../JS/products.js"></script>
+  </body>
+</html>

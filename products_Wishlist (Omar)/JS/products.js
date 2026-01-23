@@ -1,0 +1,269 @@
+
+/* USER ROLES */
+var ADMIN = "admin";
+var CUSTOMER = "customer";
+
+/* ORDER STATUS */
+var PENDING = "pending";
+var CONFIRMED = "confirmed";
+var REJECTED = "rejected";
+
+/* LOCAL STORAGE KEYS */
+var USERS_KEY = "users";
+var PRODUCTS_KEY = "products";
+var CATEGORIES_KEY = "categories";
+var CART_KEY = "cart";
+var ORDERS_KEY = "orders";
+var CURRENT_USER_KEY = "currentUser";
+var WISHLIST_KEY = "wishlist";
+
+/* MAIN DATA ARRAYS */
+let users = [];
+let products = [];
+let categories = [];
+let cart = [];
+let orders = [];
+
+/* CURRENT USER */
+let currentUser = null;
+
+/* OBJECT TEMPLATES */
+let user = {
+  id: "",
+  name: "",
+  email: "",
+  password: "",
+  role: CUSTOMER
+};
+
+let product = {
+  id: "",
+  name: "",
+  image: "",
+  categoryId: "",
+  price: 0,
+  description: "",
+  stock: 0
+};
+
+let category = {
+  id: "",
+  name: ""
+};
+
+let cartItem = {
+  productId: "",
+  quantity: 1
+};
+
+let order = {
+  id: "",
+  userId: "",
+  items: [],
+  total: 0,
+  status: PENDING,
+  date: ""
+};
+
+/* STANDARD ERROR MESSAGES */
+var ERR_REQUIRED = "This field is required";
+var ERR_EMAIL = "Invalid email";
+var ERR_PASSWORD = "Password must be at least 6 characters";
+
+/* ===============================
+   END OF STANDARD VARIABLES
+   =============================== */
+
+const productGrid = document.querySelector(".products-grid");
+const categoryFilter = document.querySelector("#categoryFilter");
+const minPriceInput = document.querySelector("#minPrice");
+const maxPriceInput = document.querySelector("#maxPrice");
+const wishlistCount = document.querySelector("#wishlistCount");
+
+const sampleCategories = [
+  { id: "", name: "" },
+  { id: "", name: "" },
+  { id: "", name: "" }
+];
+
+const sampleProducts = [
+  {
+    id: "",
+    name: "",
+    image: "",
+    categoryId: "",
+    price: ,
+    description: "",
+    stock: 
+  },
+  {
+    id: "",
+    name: "",
+    image: "",
+    categoryId: "",
+    price: ,
+    description: "",
+    stock:
+  },
+  {
+    id: "",
+    name: "",
+    image: "",
+    categoryId: "",
+    price: ,
+    description: "",
+    stock: 
+  },
+  {
+    id: "",
+    name: "",
+    image: "",
+    categoryId: "cat-2",
+    price: ,
+    description: "",
+    stock: 
+  },
+  {
+    id: "",
+    name: "",
+    image: "",
+    categoryId: "",
+    price: ,
+    description: "",
+    stock: 
+  }
+];
+
+function loadData() {
+  const storedCategories = localStorage.getItem(CATEGORIES_KEY);
+  const storedProducts = localStorage.getItem(PRODUCTS_KEY);
+
+  categories = storedCategories ? JSON.parse(storedCategories) : sampleCategories;
+  products = storedProducts ? JSON.parse(storedProducts) : sampleProducts;
+
+  localStorage.setItem(CATEGORIES_KEY, JSON.stringify(categories));
+  localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
+}
+
+function renderCategoryOptions() {
+  categoryFilter.innerHTML = '<option value="">All categories</option>';
+  categories.forEach((cat) => {
+    const option = document.createElement("option");
+    option.value = cat.id;
+    option.textContent = cat.name;
+    categoryFilter.appendChild(option);
+  });
+}
+
+function updateWishlistCount() {
+  const wishlist = getWishlist();
+  wishlistCount.textContent = wishlist.length;
+}
+
+function buildProductCard(item) {
+  const card = document.createElement("article");
+  card.className = "product-card";
+
+  const image = document.createElement("img");
+  image.src = item.image;
+  image.alt = item.name;
+
+  const body = document.createElement("div");
+  body.className = "product-body";
+
+  const title = document.createElement("h3");
+  title.textContent = item.name;
+
+  const description = document.createElement("p");
+  description.textContent = item.description;
+
+  const meta = document.createElement("div");
+  meta.className = "product-meta";
+
+  const price = document.createElement("span");
+  price.className = "price";
+  price.textContent = `$${item.price.toFixed(2)}`;
+
+  const stock = document.createElement("span");
+  stock.className = "stock";
+  stock.textContent = `${item.stock} in stock`;
+
+  meta.append(price, stock);
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "wishlist-button";
+
+  const updateButtonState = () => {
+    const inWishlist = isInWishlist(item.id);
+    button.classList.toggle("in-wishlist", inWishlist);
+    button.textContent = inWishlist ? "Remove from wishlist" : "Add to wishlist";
+  };
+
+  button.addEventListener("click", () => {
+    toggleWishlist(item.id);
+    updateButtonState();
+    updateWishlistCount();
+  });
+
+  updateButtonState();
+
+  body.append(title, description, meta, button);
+  card.append(image, body);
+
+  return card;
+}
+
+function renderProducts(list) {
+  productGrid.innerHTML = "";
+
+  if (!list.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty-state";
+    empty.textContent = "No products match your filters.";
+    productGrid.appendChild(empty);
+    return;
+  }
+
+  list.forEach((item) => {
+    productGrid.appendChild(buildProductCard(item));
+  });
+}
+
+function applyFilters() {
+  const categoryValue = categoryFilter.value;
+  const minValue = parseFloat(minPriceInput.value);
+  const maxValue = parseFloat(maxPriceInput.value);
+
+  let filtered = [...products];
+
+  if (categoryValue) {
+    filtered = filtered.filter((item) => item.categoryId === categoryValue);
+  }
+
+  if (!Number.isNaN(minValue)) {
+    filtered = filtered.filter((item) => item.price >= minValue);
+  }
+
+  if (!Number.isNaN(maxValue)) {
+    filtered = filtered.filter((item) => item.price <= maxValue);
+  }
+
+  renderProducts(filtered);
+}
+
+function initFilters() {
+  [categoryFilter, minPriceInput, maxPriceInput].forEach((input) => {
+    input.addEventListener("input", applyFilters);
+  });
+}
+
+function initProductsPage() {
+  loadData();
+  renderCategoryOptions();
+  updateWishlistCount();
+  renderProducts(products);
+  initFilters();
+}
+
+document.addEventListener("DOMContentLoaded", initProductsPage);
