@@ -73,7 +73,7 @@ This helped us simulate a real-world development environment.
 
 - HTML5
 - CSS3
-- JavaScript (Vanilla JS)
+- JavaScript 
 - Local Storage
 - Jira (Project Management)
 - Git & GitHub
