@@ -1,102 +1,429 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Christmas Shop</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E-Commerce Store - Shop the Best Products</title>
+    <link rel="stylesheet" href="shared/shared.css" />
+    <style>
+      .hero {
+        background: linear-gradient(
+          135deg,
+          #6366f1 0%,
+          #8b5cf6 50%,
+          #a855f7 100%
+        );
+        color: white;
+        padding: 80px 24px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
 
-    <header>
-        <div class="logo">Christmas Shop</div>
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="Auth- (Samy)/login-register.html" id="loginLink">Login</a></li>
-            </ul>
-        </nav>
-        <div id="userGreeting" style="display:none; color: white; margin-left: 20px; font-weight: bold;"></div>
-    </header>
+      .hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      }
 
-    <div class="container">
-        <!-- Hero Section -->
-        <section class="hero">
-            <h1>Welcome to Our Gift Shop</h1>
-            <p>Find the best gifts for your loved ones this Christmas!</p>
-        </section>
+      .hero-content {
+        max-width: 800px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
 
-        <!-- About / Features Section -->
-        <section class="about-section">
-            <h2>Why Shop With Us?</h2>
-            <div class="features">
-                <div class="feature-item">Unique Gifts</div>
-                <div class="feature-item">Fast Delivery</div>
-                <div class="feature-item">Top Quality</div>
-            </div>
-            <p style="margin-top: 15px; color: #777;">We are a small shop dedicated to bringing joy to your holidays.</p>
-        </section>
+      .hero h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 16px;
+        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      }
 
-        <!-- Product Section -->
-        <section class="products">
-            <h2>Featured Products</h2>
-            <div class="product-grid">
-                <!-- Product 1 -->
-                <div class="product-card">
-                    <img src="img/product/1.jpg" alt="Candle">
-                    <h3>Holiday Candle</h3>
-                    <p>$38.00</p>
-                    <button>Add to Cart</button>
-                </div>
-                <!-- Product 2 -->
-                <div class="product-card">
-                    <img src="img/product/2.jpg" alt="Tree">
-                    <h3>Christmas Tree</h3>
-                    <p>$38.00</p>
-                    <button>Add to Cart</button>
-                </div>
-                <!-- Product 3 -->
-                <div class="product-card">
-                    <img src="img/product/3.jpg" alt="Santa">
-                    <h3>Santa Doll</h3>
-                    <p>$38.00</p>
-                    <button>Add to Cart</button>
-                </div>
-            </div>
-        </section>
-    </div>
+      .hero p {
+        font-size: 1.25rem;
+        opacity: 0.9;
+        margin-bottom: 32px;
+      }
 
+      .hero-buttons {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .btn-hero {
+        padding: 16px 40px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+      }
+
+      .btn-hero-primary {
+        background: white;
+        color: #6366f1;
+        border: none;
+      }
+
+      .btn-hero-primary:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn-hero-outline {
+        background: transparent;
+        border: 2px solid rgba(255, 255, 255, 0.8);
+        color: white;
+      }
+
+      .btn-hero-outline:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 32px;
+        padding: 60px 24px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .feature-card {
+        background: white;
+        padding: 32px;
+        border-radius: 16px;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+      }
+
+      .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 16px;
+      }
+
+      .feature-card h3 {
+        font-size: 1.25rem;
+        margin-bottom: 8px;
+        color: #1e293b;
+      }
+
+      .feature-card p {
+        color: #64748b;
+        font-size: 0.95rem;
+      }
+
+      .featured-section {
+        padding: 60px 24px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .section-header {
+        text-align: center;
+        margin-bottom: 48px;
+      }
+
+      .section-header h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 12px;
+      }
+
+      .section-header p {
+        color: #64748b;
+        font-size: 1.1rem;
+      }
+
+      .cta-section {
+        background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+        color: white;
+        padding: 60px 24px;
+        text-align: center;
+      }
+
+      .cta-section h2 {
+        font-size: 2rem;
+        margin-bottom: 16px;
+      }
+
+      .cta-section p {
+        opacity: 0.9;
+        margin-bottom: 24px;
+      }
+
+      footer {
+        background: #1e293b;
+        color: #94a3b8;
+        padding: 48px 24px;
+        text-align: center;
+      }
+
+      footer p {
+        margin-bottom: 8px;
+      }
+
+      footer a {
+        color: #a5b4fc;
+      }
+
+      @media (max-width: 768px) {
+        .hero h1 {
+          font-size: 2rem;
+        }
+
+        .hero p {
+          font-size: 1rem;
+        }
+
+        .btn-hero {
+          padding: 14px 28px;
+          font-size: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="nav">
+      <div class="nav-brand">
+        <i class="fa-solid fa-cart-shopping"></i> E-Commerce
+      </div>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link active">Home</a>
+        <a href="customer/products.html" class="nav-link">Products</a>
+        <a href="customer/cart.html" class="nav-link">Cart</a>
+        <a href="auth/login-register.html" class="nav-link" id="authLink"
+          >Login</a
+        >
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Shop the Future Today</h1>
+        <p>
+          Discover amazing products at unbeatable prices. Quality meets
+          affordability.
+        </p>
+        <div class="hero-buttons">
+          <a href="customer/products.html" class="btn-hero btn-hero-primary"
+            >Browse Products</a
+          >
+          <a href="auth/login-register.html" class="btn-hero btn-hero-outline"
+            >Create Account</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa-solid fa-truck"></i></div>
+        <h3>Free Shipping</h3>
+        <p>Free shipping on all orders. No minimum purchase required.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <h3>Secure Payment</h3>
+        <p>100% secure payments. Cash on delivery or PayPal.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa-solid fa-rotate-left"></i></div>
+        <h3>Easy Returns</h3>
+        <p>14-day return policy. No questions asked.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa-solid fa-headset"></i></div>
+        <h3>24/7 Support</h3>
+        <p>Round the clock customer support. We're always here to help.</p>
+      </div>
+    </section>
+
+    <!-- Featured Products Section -->
+    <section class="featured-section">
+      <div class="section-header">
+        <h2>Featured Products</h2>
+        <p>Check out our top picks for you</p>
+      </div>
+      <div class="products-grid" id="featuredProducts">
+        <p class="text-center text-muted" style="grid-column: 1/-1">
+          Loading products...
+        </p>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+      <h2>Ready to Start Shopping?</h2>
+      <p>
+        Join thousands of happy customers. Sign up today and get 10% off your
+        first order!
+      </p>
+      <a
+        href="auth/login-register.html"
+        class="btn-hero btn-hero-primary"
+        style="color: #10b981"
+        >Get Started Free</a
+      >
+    </section>
+
+    <!-- Footer -->
     <footer>
-        <p>&copy; 2026 My Christmas Shop.</p>
+      <p>&copy; 2026 E-Commerce Store. All rights reserved.</p>
+      <p>Made by ITI Students</p>
     </footer>
 
-    <!-- Simple Script to handle Login/Logout text -->
+    <!-- Firebase SDK -->
+    <!-- Firebase Config -->
+    <script src="shared/env.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var user = localStorage.getItem('currentUser');
-            var loginLink = document.getElementById('loginLink');
-            var greeting = document.getElementById('userGreeting');
+      // Firebase Config
+      var firebaseConfig = window.FIREBASE_CONFIG;
+      if (!firebaseConfig) {
+        console.error(
+          "Firebase config not found! Make sure shared/env.js is loaded.",
+        );
+      }
+      firebase.initializeApp(firebaseConfig);
+      var db = firebase.firestore();
 
-            if (user) {
-                var userData = JSON.parse(user);
-                // Change Login to Logout
-                loginLink.textContent = "Logout";
-                loginLink.href = "#";
-                loginLink.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    localStorage.removeItem('currentUser');
-                    // Check if redirect is needed
-                    window.location.reload();
-                });
+      // Migration Logic
+      (function migrateUsers() {
+        try {
+          var localUsers = JSON.parse(localStorage.getItem("users")) || [];
+          if (localUsers.length === 0) return;
 
-                // Show greeting
-                if (greeting) {
-                    greeting.textContent = "Hi, " + userData.name + "!";
-                    greeting.style.display = "block";
+          console.log("Checking for users to migrate...", localUsers.length);
+
+          localUsers.forEach(function (user) {
+            if (!user.email) return;
+
+            db.collection("users")
+              .where("email", "==", user.email)
+              .get()
+              .then(function (snapshot) {
+                if (snapshot.empty) {
+                  console.log("Migrating user:", user.email);
+                  db.collection("users").add({
+                    name: user.name || "Unknown",
+                    email: user.email,
+                    password: user.password,
+                    role: user.role || "customer",
+                    createdAt: new Date().toISOString(),
+                    migrated: true,
+                  });
                 }
-            }
-        });
-    </script>
+              });
+          });
+        } catch (e) {
+          console.error("Migration error:", e);
+        }
+      })();
 
-</body>
+      // Check if logged in
+      var currentUser = localStorage.getItem("currentUser");
+      if (currentUser) {
+        var user = JSON.parse(currentUser);
+        var authLink = document.getElementById("authLink");
+        if (user.role === "admin") {
+          authLink.textContent = "Admin Dashboard";
+          authLink.href = "Amgd (Admin)/index.html";
+        } else {
+          authLink.textContent = "My Account";
+          authLink.href = "customer/orders.html";
+        }
+      }
+
+      // Load featured products
+      function loadFeaturedProducts() {
+        db.collection("products")
+          .limit(4)
+          .get()
+          .then(function (snapshot) {
+            var container = document.getElementById("featuredProducts");
+
+            if (snapshot.empty) {
+              container.innerHTML =
+                '<p class="text-center text-muted" style="grid-column: 1/-1;">No products available yet. Check back soon!</p>';
+              return;
+            }
+
+            var html = "";
+            snapshot.forEach(function (doc) {
+              var p = doc.data();
+              var stockClass = p.stock <= 0 ? "out" : p.stock < 5 ? "low" : "";
+              var stockText =
+                p.stock <= 0
+                  ? "Out of Stock"
+                  : p.stock < 5
+                    ? "Only " + p.stock + " left!"
+                    : p.stock + " in stock";
+
+              html += '<article class="product-card">';
+              html +=
+                '<img src="' +
+                p.image +
+                '" alt="' +
+                p.name +
+                '" onerror="this.src=\'https://via.placeholder.com/300x200\'">';
+              html += '<div class="product-body">';
+              html += "<h3>" + p.name + "</h3>";
+              html +=
+                '<p class="description">' +
+                (p.description.length > 60
+                  ? p.description.substring(0, 60) + "..."
+                  : p.description) +
+                "</p>";
+              html +=
+                '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:auto;">';
+              html += '<span class="price">$' + p.price.toFixed(2) + "</span>";
+              html +=
+                '<span class="stock ' +
+                stockClass +
+                '">' +
+                stockText +
+                "</span>";
+              html += "</div>";
+              html +=
+                '<a href="customer/product-detail.html?id=' +
+                doc.id +
+                '" class="btn btn-primary btn-block mt-2"><i class="fa-solid fa-eye"></i> View Details</a>';
+              html += "</div></article>";
+            });
+
+            container.innerHTML = html;
+          })
+          .catch(function (error) {
+            console.error("Error loading products:", error);
+            document.getElementById("featuredProducts").innerHTML =
+              '<p class="text-center text-danger" style="grid-column: 1/-1;">Error loading products.</p>';
+          });
+      }
+
+      loadFeaturedProducts();
+    </script>
+  </body>
 </html>

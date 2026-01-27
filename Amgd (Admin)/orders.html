@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Orders - Admin</title>
+    <link rel="stylesheet" href="../shared/shared.css" />
+    <style>
+      .admin-layout {
+        display: flex;
+        min-height: calc(100vh - 64px);
+      }
+
+      .sidebar {
+        width: 250px;
+        background: var(--white);
+        border-right: 1px solid var(--border);
+        padding: 24px 0;
+        position: sticky;
+        top: 64px;
+        height: calc(100vh - 64px);
+      }
+
+      .sidebar-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 24px;
+        color: var(--muted);
+        font-weight: 500;
+        transition: var(--transition);
+      }
+
+      .sidebar-link:hover {
+        background: var(--light);
+        color: var(--primary);
+      }
+
+      .sidebar-link.active {
+        background: rgba(99, 102, 241, 0.1);
+        color: var(--primary);
+        border-right: 3px solid var(--primary);
+      }
+
+      .main-content {
+        flex: 1;
+        padding: 32px;
+        background: var(--light);
+      }
+
+      .order-filters {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+      }
+
+      .filter-btn {
+        padding: 10px 20px;
+        border: 1px solid var(--border);
+        background: var(--white);
+        border-radius: var(--radius-full);
+        cursor: pointer;
+        font-weight: 500;
+        transition: var(--transition);
+      }
+
+      .filter-btn:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+
+      .filter-btn.active {
+        background: var(--primary);
+        color: var(--white);
+        border-color: var(--primary);
+      }
+
+      .orders-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .order-card-admin {
+        background: var(--white);
+        border-radius: var(--radius-lg);
+        padding: 24px;
+        box-shadow: var(--shadow);
+        border-left: 4px solid var(--border);
+      }
+
+      .order-card-admin.pending {
+        border-left-color: var(--warning);
+      }
+
+      .order-card-admin.confirmed {
+        border-left-color: var(--success);
+      }
+
+      .order-card-admin.rejected {
+        border-left-color: var(--danger);
+      }
+
+      .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 16px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .order-info h3 {
+        font-size: 1.1rem;
+        margin-bottom: 4px;
+      }
+
+      .order-info p {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .order-items {
+        margin-bottom: 16px;
+      }
+
+      .order-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--light);
+      }
+
+      .order-item:last-child {
+        border-bottom: none;
+      }
+
+      .order-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 16px;
+        border-top: 2px solid var(--border);
+      }
+
+      .order-total {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      .order-actions {
+        display: flex;
+        gap: 12px;
+      }
+
+      .stock-warning {
+        color: var(--danger);
+        font-size: 0.8rem;
+        margin-left: 8px;
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          display: none;
+        }
+
+        .order-footer {
+          flex-direction: column;
+          gap: 16px;
+          align-items: stretch;
+        }
+
+        .order-actions {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="nav">
+      <div class="nav-brand">
+        <i class="fa-solid fa-cart-shopping"></i> E-Commerce <span>Admin</span>
+      </div>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Dashboard</a>
+        <a href="products.html" class="nav-link">Products</a>
+        <a href="categories.html" class="nav-link">Categories</a>
+        <a href="orders.html" class="nav-link active">Orders</a>
+        <a href="reviews.html" class="nav-link">Reviews</a>
+        <a href="#" class="nav-link logout" id="logoutBtn">Logout</a>
+      </div>
+    </nav>
+
+    <div class="admin-layout">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <a href="index.html" class="sidebar-link"
+          ><i class="fa-solid fa-chart-simple"></i> Dashboard</a
+        >
+        <a href="products.html" class="sidebar-link"
+          ><i class="fa-solid fa-box-open"></i> Products</a
+        >
+        <a href="categories.html" class="sidebar-link"
+          ><i class="fa-solid fa-tags"></i> Categories</a
+        >
+        <a href="orders.html" class="sidebar-link active"
+          ><i class="fa-solid fa-clipboard-list"></i> Orders</a
+        >
+        <a href="reviews.html" class="sidebar-link"
+          ><i class="fa-solid fa-star"></i> Reviews</a
+        >
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <div class="page-header">
+          <h1 class="page-title">Manage Orders</h1>
+          <p class="page-subtitle">View and process customer orders.</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon primary">
+              <i class="fa-solid fa-clipboard-list"></i>
+            </div>
+            <div class="stat-info">
+              <h3 id="totalOrders">0</h3>
+              <p>Total Orders</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon warning">
+              <i class="fa-solid fa-clock"></i>
+            </div>
+            <div class="stat-info">
+              <h3 id="pendingOrders">0</h3>
+              <p>Pending</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon success">
+              <i class="fa-solid fa-check"></i>
+            </div>
+            <div class="stat-info">
+              <h3 id="confirmedOrders">0</h3>
+              <p>Confirmed</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon danger">
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+            <div class="stat-info">
+              <h3 id="rejectedOrders">0</h3>
+              <p>Rejected</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="order-filters">
+          <button class="filter-btn active" onclick="filterOrders('all', this)">
+            All Orders
+          </button>
+          <button class="filter-btn" onclick="filterOrders('pending', this)">
+            <i class="fa-solid fa-clock"></i> Pending
+          </button>
+          <button class="filter-btn" onclick="filterOrders('confirmed', this)">
+            <i class="fa-solid fa-check"></i> Confirmed
+          </button>
+          <button class="filter-btn" onclick="filterOrders('rejected', this)">
+            <i class="fa-solid fa-xmark"></i> Rejected
+          </button>
+        </div>
+
+        <!-- Orders List -->
+        <div class="orders-container" id="ordersContainer">
+          <p class="text-center text-muted">Loading orders...</p>
+        </div>
+      </main>
+    </div>
+
+    <!-- Firebase SDK -->
+    <!-- Firebase SDK -->
+    <script src="../shared/env.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="storage.js"></script>
+
+    <script>
+      var currentFilter = "all";
+      var allOrders = [];
+
+      function init() {
+        var currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        if (!currentUser || currentUser.role !== "admin") {
+          alert("Access denied. Admins only.");
+          window.location.href = "../auth/login-register.html";
+          return;
+        }
+
+        loadProducts(function () {
+          loadOrders(function () {
+            allOrders = getOrders();
+            updateStats();
+            renderOrders();
+          });
+        });
+      }
+
+      function updateStats() {
+        var pending = 0,
+          confirmed = 0,
+          rejected = 0;
+        for (var i = 0; i < allOrders.length; i++) {
+          if (allOrders[i].status === "pending") pending++;
+          else if (allOrders[i].status === "confirmed") confirmed++;
+          else if (allOrders[i].status === "rejected") rejected++;
+        }
+        document.getElementById("totalOrders").textContent = allOrders.length;
+        document.getElementById("pendingOrders").textContent = pending;
+        document.getElementById("confirmedOrders").textContent = confirmed;
+        document.getElementById("rejectedOrders").textContent = rejected;
+      }
+
+      function filterOrders(status, btn) {
+        currentFilter = status;
+        var buttons = document.querySelectorAll(".filter-btn");
+        for (var i = 0; i < buttons.length; i++) {
+          buttons[i].classList.remove("active");
+        }
+        btn.classList.add("active");
+        renderOrders();
+      }
+
+      function renderOrders() {
+        var container = document.getElementById("ordersContainer");
+        var products = getProducts();
+
+        var orders = [];
+        for (var i = 0; i < allOrders.length; i++) {
+          if (
+            currentFilter === "all" ||
+            allOrders[i].status === currentFilter
+          ) {
+            orders.push(allOrders[i]);
+          }
+        }
+
+        if (orders.length === 0) {
+          container.innerHTML =
+            '<div class="empty-state"><div class="empty-state-icon"><i class="fa-solid fa-clipboard-list"></i></div><h3>No orders found</h3><p>No ' +
+            (currentFilter === "all" ? "" : currentFilter + " ") +
+            "orders to display.</p></div>";
+          return;
+        }
+
+        // Sort by date
+        orders.sort(function (a, b) {
+          return new Date(b.date) - new Date(a.date);
+        });
+
+        var html = "";
+        for (var i = 0; i < orders.length; i++) {
+          var order = orders[i];
+          var date =
+            new Date(order.date).toLocaleDateString() +
+            " " +
+            new Date(order.date).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            });
+
+          html += '<div class="order-card-admin ' + order.status + '">';
+          html += '<div class="order-header">';
+          html +=
+            '<div class="order-info"><h3>Order #' +
+            order.id.substring(0, 8) +
+            "</h3>";
+          html +=
+            "<p>Customer: " +
+            (order.customerName || "Unknown") +
+            " • " +
+            date +
+            "</p></div>";
+          html +=
+            '<span class="badge badge-' +
+            order.status +
+            '">' +
+            order.status.toUpperCase() +
+            "</span>";
+          html += "</div>";
+
+          html += '<div class="order-items">';
+          var hasStockIssue = false;
+          for (var j = 0; j < order.items.length; j++) {
+            var item = order.items[j];
+            var productName = "Unknown Product";
+            var currentStock = 0;
+
+            for (var k = 0; k < products.length; k++) {
+              if (products[k].id === item.productId) {
+                productName = products[k].name;
+                currentStock = products[k].stock;
+                break;
+              }
+            }
+
+            var stockWarning = "";
+            if (order.status === "pending" && currentStock < item.quantity) {
+              stockWarning =
+                '<span class="stock-warning"><i class="fa-solid fa-triangle-exclamation"></i> Low stock (' +
+                currentStock +
+                " available)</span>";
+              hasStockIssue = true;
+            }
+
+            html +=
+              '<div class="order-item"><span>' +
+              productName +
+              " × " +
+              item.quantity +
+              stockWarning +
+              "</span></div>";
+          }
+          html += "</div>";
+
+          html += '<div class="order-footer">';
+          html +=
+            '<span class="order-total">Total: $' +
+            order.total.toFixed(2) +
+            "</span>";
+
+          if (order.status === "pending") {
+            var disabledAttr = hasStockIssue
+              ? ' disabled title="Insufficient stock"'
+              : "";
+            html += '<div class="order-actions">';
+            html +=
+              '<button class="btn btn-secondary" onclick="confirmOrder(\'' +
+              order.id +
+              "')\"" +
+              disabledAttr +
+              '><i class="fa-solid fa-check"></i> Confirm</button>';
+            html +=
+              '<button class="btn btn-danger" onclick="rejectOrder(\'' +
+              order.id +
+              '\')"><i class="fa-solid fa-xmark"></i> Reject</button>';
+            html += "</div>";
+          } else {
+            html +=
+              '<span class="text-muted">Status: ' + order.status + "</span>";
+          }
+
+          html += "</div></div>";
+        }
+
+        container.innerHTML = html;
+      }
+
+      function confirmOrder(orderId) {
+        if (!confirm("Confirm this order? Stock will be deducted.")) return;
+        updateOrderStatus(orderId, "confirmed", function () {
+          allOrders = getOrders();
+          updateStats();
+          renderOrders();
+          alert("Order confirmed!");
+        });
+      }
+
+      function rejectOrder(orderId) {
+        if (!confirm("Reject this order?")) return;
+        updateOrderStatus(orderId, "rejected", function () {
+          allOrders = getOrders();
+          updateStats();
+          renderOrders();
+          alert("Order rejected.");
+        });
+      }
+
+      document
+        .getElementById("logoutBtn")
+        .addEventListener("click", function (e) {
+          e.preventDefault();
+          localStorage.removeItem("currentUser");
+          window.location.href = "../index.html";
+        });
+
+      init();
+    </script>
+  </body>
+</html>

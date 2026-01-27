@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Orders</title>
+    <link rel="stylesheet" href="../shared/shared.css" />
+    <link rel="stylesheet" href="customer.css" />
+    <style>
+      /* Remove old nav styles */
+      /* nav { background: #2b6cb0; padding: 15px 20px; margin-bottom: 20px; } */
+      /* nav a { color: white; text-decoration: none; margin-right: 20px; font-weight: 600; } */
+      /* nav a:hover { text-decoration: underline; } */
+
+      .order-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 1px solid #e2e8f0;
+      }
+      .order-header {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 2px solid #e2e8f0;
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+      }
+      .order-status {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+      }
+      .order-status.pending {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .order-status.confirmed {
+        background: #d1fae5;
+        color: #065f46;
+      }
+      .order-status.rejected {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+      .order-item {
+        padding: 10px 0;
+        border-bottom: 1px solid #f1f1f1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .order-total {
+        text-align: right;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #2b6cb0;
+        margin-top: 15px;
+      }
+      .btn-return {
+        background: #ed8936;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .btn-return:hover {
+        background: #dd6b20;
+      }
+      .btn-return:disabled {
+        background: #cbd5e0;
+        cursor: not-allowed;
+      }
+      .return-period-expired {
+        color: #a0aec0;
+        font-size: 12px;
+      }
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+      .modal-overlay.show {
+        display: flex;
+      }
+      .modal {
+        background: white;
+        padding: 30px;
+        border-radius: 16px;
+        max-width: 500px;
+        width: 90%;
+      }
+      .modal h2 {
+        margin-top: 0;
+      }
+      .modal select,
+      .modal textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        margin-top: 10px;
+        box-sizing: border-box;
+      }
+      .modal-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      .modal-buttons button {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .btn-submit {
+        background: #2f855a;
+        color: white;
+      }
+      .btn-submit:disabled {
+        background: #a0aec0;
+        cursor: not-allowed;
+      }
+      .btn-cancel {
+        background: #e2e8f0;
+        color: #4a5568;
+      }
+      .error-text {
+        color: #e53e3e;
+        font-size: 12px;
+        margin-top: 5px;
+      }
+      .return-policy {
+        background: #f7fafc;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="nav">
+      <div class="nav-brand">
+        <i class="fa-solid fa-cart-shopping"></i> E-Commerce
+      </div>
+      <div class="nav-links">
+        <a href="../index.html" class="nav-link">Home</a>
+        <a href="products.html" class="nav-link">Products</a>
+        <a href="cart.html" class="nav-link"
+          ><i class="fa-solid fa-cart-shopping"></i> Cart
+          <span
+            id="navCartCount"
+            class="badge badge-info"
+            style="padding: 2px 6px; font-size: 0.7rem; display: none"
+            >0</span
+          ></a
+        >
+        <a href="orders.html" class="nav-link active auth-required"
+          >My Orders</a
+        >
+        <a href="returns.html" class="nav-link auth-required">Returns</a>
+        <a
+          href="../auth/login-register.html"
+          class="nav-link"
+          id="loginLink"
+          style="display: none"
+          >Login</a
+        >
+        <a href="#" class="nav-link logout" id="logoutBtn">Logout</a>
+      </div>
+    </nav>
+
+    <main class="container">
+      <h1 class="page-title">My Orders</h1>
+      <p class="page-subtitle">
+        View your orders and request returns for confirmed orders.
+      </p>
+
+      <div class="return-policy">
+        <strong>Return Policy:</strong> You can request a return within
+        <strong>14 days</strong> of order confirmation. Select a reason for your
+        return and our team will review it.
+      </div>
+
+      <div id="ordersContainer"><p>Loading orders...</p></div>
+    </main>
+
+    <!-- Return Modal -->
+    <div class="modal-overlay" id="returnModal">
+      <div class="modal">
+        <h2>Request Return</h2>
+        <p id="returnProductName"></p>
+
+        <label><strong>Reason for Return:</strong></label>
+        <select id="returnReason" onchange="validateReason()">
+          <option value="">-- Select a reason --</option>
+          <option value="Defective product">Defective product</option>
+          <option value="Wrong item received">Wrong item received</option>
+          <option value="Item not as described">Item not as described</option>
+          <option value="Changed my mind">Changed my mind</option>
+          <option value="Damaged during shipping">
+            Damaged during shipping
+          </option>
+          <option value="Quality not as expected">
+            Quality not as expected
+          </option>
+        </select>
+        <p id="reasonError" class="error-text"></p>
+
+        <label><strong>Additional Details (optional):</strong></label>
+        <textarea
+          id="returnDetails"
+          placeholder="Please provide more details about your return request..."
+          rows="4"
+        ></textarea>
+
+        <div class="modal-buttons">
+          <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+          <button
+            class="btn-submit"
+            id="submitReturnBtn"
+            onclick="submitReturn()"
+          >
+            Submit Return Request
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="../shared/env.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <script>
+      // Firebase Config
+      var firebaseConfig = window.FIREBASE_CONFIG;
+      if (!firebaseConfig) {
+        console.error(
+          "Firebase config not found! Make sure shared/env.js is loaded.",
+        );
+      }
+      firebase.initializeApp(firebaseConfig);
+      var db = firebase.firestore();
+
+      // Constants
+      var RETURN_PERIOD_DAYS = 14;
+
+      // Data
+      var currentUser = JSON.parse(localStorage.getItem("currentUser"));
+      var orders = [];
+      var products = [];
+      var returns = [];
+      var currentReturnData = null;
+
+      // Check login
+      if (!currentUser) {
+        alert("Please login");
+        window.location.href = "../auth/login-register.html";
+      }
+
+      // Load data
+      function loadData() {
+        db.collection("products")
+          .get()
+          .then(function (snapshot) {
+            products = [];
+            snapshot.forEach(function (doc) {
+              products.push({
+                id: doc.id,
+                name: doc.data().name,
+                price: doc.data().price,
+              });
+            });
+            return db
+              .collection("returns")
+              .where("userId", "==", currentUser.id)
+              .get();
+          })
+          .then(function (snapshot) {
+            returns = [];
+            snapshot.forEach(function (doc) {
+              returns.push({
+                orderId: doc.data().orderId,
+                productId: doc.data().productId,
+              });
+            });
+            return db
+              .collection("orders")
+              .where("userId", "==", currentUser.id)
+              .get();
+          })
+          .then(function (snapshot) {
+            orders = [];
+            snapshot.forEach(function (doc) {
+              orders.push({ id: doc.id, ...doc.data() });
+            });
+            renderOrders();
+          })
+          .catch(function (error) {
+            console.error("Error loading data:", error);
+            document.getElementById("ordersContainer").innerHTML =
+              '<div style="text-align:center;padding:40px;color:red;">Error loading orders. Please try again.</div>';
+          });
+      }
+
+      // Check if return exists
+      function hasReturn(orderId, productId) {
+        for (var i = 0; i < returns.length; i++) {
+          if (
+            returns[i].orderId === orderId &&
+            returns[i].productId === productId
+          )
+            return true;
+        }
+        return false;
+      }
+
+      // Get product
+      function getProduct(productId) {
+        for (var i = 0; i < products.length; i++) {
+          if (products[i].id === productId) return products[i];
+        }
+        return null;
+      }
+
+      // Check if within return period
+      function isWithinReturnPeriod(orderDate) {
+        var order = new Date(orderDate);
+        var now = new Date();
+        var diffDays = (now - order) / (1000 * 60 * 60 * 24);
+        return diffDays <= RETURN_PERIOD_DAYS;
+      }
+
+      // Get days remaining for return
+      function getDaysRemaining(orderDate) {
+        var order = new Date(orderDate);
+        var now = new Date();
+        var diffDays = (now - order) / (1000 * 60 * 60 * 24);
+        return Math.max(0, Math.ceil(RETURN_PERIOD_DAYS - diffDays));
+      }
+
+      // Render orders
+      function renderOrders() {
+        var container = document.getElementById("ordersContainer");
+
+        if (orders.length === 0) {
+          container.innerHTML =
+            '<div style="text-align:center;padding:40px;">You haven\'t placed any orders yet. <a href="products.html">Start shopping!</a></div>';
+          return;
+        }
+
+        // Sort by date (newest first)
+        orders.sort(function (a, b) {
+          return new Date(b.date) - new Date(a.date);
+        });
+
+        var html = "";
+        for (var i = 0; i < orders.length; i++) {
+          var order = orders[i];
+          var date = new Date(order.date).toLocaleDateString();
+          var withinPeriod = isWithinReturnPeriod(order.date);
+          var daysRemaining = getDaysRemaining(order.date);
+
+          html += '<div class="order-card">';
+          html +=
+            '<div class="order-header"><div><strong>Order #' +
+            order.id.substring(0, 8) +
+            "</strong><br><small>" +
+            date +
+            "</small></div>";
+          html +=
+            '<span class="order-status ' +
+            order.status +
+            '">' +
+            order.status.toUpperCase() +
+            "</span></div>";
+
+          // Render items
+          for (var j = 0; j < order.items.length; j++) {
+            var item = order.items[j];
+            var product = getProduct(item.productId);
+            var name = product ? product.name : "Unknown Product";
+            var price = product ? product.price : 0;
+            var hasRet = hasReturn(order.id, item.productId);
+
+            html +=
+              '<div class="order-item"><div>' +
+              name +
+              " x" +
+              item.quantity +
+              " - $" +
+              (price * item.quantity).toFixed(2) +
+              "</div><div>";
+
+            if (order.status === "confirmed") {
+              if (hasRet) {
+                html +=
+                  '<button class="btn-return" disabled>Return Requested</button>';
+              } else if (!withinPeriod) {
+                html +=
+                  '<span class="return-period-expired">Return period expired</span>';
+              } else {
+                html +=
+                  '<button class="btn-return" onclick="openModal(\'' +
+                  order.id +
+                  "','" +
+                  item.productId +
+                  "','" +
+                  name.replace(/'/g, "\\'") +
+                  "'," +
+                  item.quantity +
+                  ",'" +
+                  order.date +
+                  "')\">Request Return</button>";
+                if (daysRemaining <= 3) {
+                  html +=
+                    '<br><small style="color:orange;">' +
+                    daysRemaining +
+                    " day(s) left</small>";
+                }
+              }
+            } else if (order.status === "pending") {
+              html +=
+                '<small style="color:#718096;">Awaiting confirmation</small>';
+            } else if (order.status === "rejected") {
+              html +=
+                '<small style="color:#e53e3e;">Order was rejected</small>';
+            }
+
+            html += "</div></div>";
+          }
+
+          html +=
+            '<div class="order-total">Total: $' +
+            order.total.toFixed(2) +
+            "</div></div>";
+        }
+        container.innerHTML = html;
+      }
+
+      // Open return modal
+      function openModal(orderId, productId, name, qty, orderDate) {
+        // Validate return period
+        if (!isWithinReturnPeriod(orderDate)) {
+          alert(
+            "Return period has expired. Returns must be requested within " +
+              RETURN_PERIOD_DAYS +
+              " days of order confirmation.",
+          );
+          return;
+        }
+
+        // Check for existing return
+        if (hasReturn(orderId, productId)) {
+          alert("You have already requested a return for this item.");
+          return;
+        }
+
+        currentReturnData = {
+          orderId: orderId,
+          productId: productId,
+          quantity: qty,
+        };
+        document.getElementById("returnProductName").textContent =
+          "Product: " + name + " (Qty: " + qty + ")";
+        document.getElementById("returnReason").value = "";
+        document.getElementById("returnDetails").value = "";
+        document.getElementById("reasonError").textContent = "";
+        document.getElementById("returnModal").classList.add("show");
+      }
+
+      // Close modal
+      function closeModal() {
+        document.getElementById("returnModal").classList.remove("show");
+        currentReturnData = null;
+      }
+
+      // Validate reason selection
+      function validateReason() {
+        var reason = document.getElementById("returnReason").value;
+        var errorEl = document.getElementById("reasonError");
+
+        if (!reason || reason === "") {
+          errorEl.textContent = "Please select a reason for your return";
+          return false;
+        }
+        errorEl.textContent = "";
+        return true;
+      }
+
+      // Submit return
+      function submitReturn() {
+        // Validate
+        if (!validateReason()) {
+          return;
+        }
+
+        var reason = document.getElementById("returnReason").value;
+        var details = document.getElementById("returnDetails").value.trim();
+
+        // Disable button during submission
+        var submitBtn = document.getElementById("submitReturnBtn");
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Submitting...";
+
+        // Create return request
+        var returnData = {
+          orderId: currentReturnData.orderId,
+          productId: currentReturnData.productId,
+          quantity: currentReturnData.quantity,
+          userId: currentUser.id,
+          reason: reason + (details ? " - " + details : ""),
+          status: "pending",
+          date: new Date().toISOString(),
+        };
+
+        db.collection("returns")
+          .add(returnData)
+          .then(function () {
+            returns.push({
+              orderId: currentReturnData.orderId,
+              productId: currentReturnData.productId,
+            });
+            closeModal();
+            renderOrders();
+            alert(
+              "Return request submitted successfully! We will review it shortly.",
+            );
+          })
+          .catch(function (error) {
+            console.error("Error submitting return:", error);
+            alert("Failed to submit return. Please try again.");
+          })
+          .finally(function () {
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Submit Return Request";
+          });
+      }
+
+      // Logout
+      document
+        .getElementById("logoutBtn")
+        .addEventListener("click", function (e) {
+          e.preventDefault();
+          localStorage.removeItem("currentUser");
+          window.location.href = "../index.html";
+        });
+
+      // Start
+      checkAuthState();
+      updateNavCartCount();
+      loadData();
+
+      function checkAuthState() {
+        var currentUser = localStorage.getItem("currentUser");
+        var authLinks = document.querySelectorAll(".auth-required");
+        var loginLink = document.getElementById("loginLink");
+        var logoutBtn = document.getElementById("logoutBtn");
+
+        if (currentUser) {
+          for (var i = 0; i < authLinks.length; i++)
+            authLinks[i].style.display = "inline-flex";
+          if (loginLink) loginLink.style.display = "none";
+          if (logoutBtn) logoutBtn.style.display = "inline-flex";
+        } else {
+          // If on orders page and not logged in, we already redirect, but just in case
+          for (var i = 0; i < authLinks.length; i++)
+            authLinks[i].style.display = "none";
+          if (loginLink) loginLink.style.display = "inline-flex";
+          if (logoutBtn) logoutBtn.style.display = "none";
+        }
+      }
+
+      function updateNavCartCount() {
+        var cart = JSON.parse(localStorage.getItem("cart")) || [];
+        var count = 0;
+        for (var i = 0; i < cart.length; i++) count += cart[i].quantity;
+        var badge = document.getElementById("navCartCount");
+        if (badge) {
+          badge.textContent = count;
+          badge.style.display = count > 0 ? "inline-flex" : "none";
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,4 +1,3 @@
-
 /* USER ROLES */
 var ADMIN = "admin";
 var CUSTOMER = "customer";
@@ -33,7 +32,7 @@ let user = {
   name: "",
   email: "",
   password: "",
-  role: CUSTOMER
+  role: CUSTOMER,
 };
 
 let product = {
@@ -43,17 +42,17 @@ let product = {
   categoryId: "",
   price: 0,
   description: "",
-  stock: 0
+  stock: 0,
 };
 
 let category = {
   id: "",
-  name: ""
+  name: "",
 };
 
 let cartItem = {
   productId: "",
-  quantity: 1
+  quantity: 1,
 };
 
 let order = {
@@ -62,7 +61,7 @@ let order = {
   items: [],
   total: 0,
   status: PENDING,
-  date: ""
+  date: "",
 };
 
 /* STANDARD ERROR MESSAGES */
@@ -81,64 +80,63 @@ const maxPriceInput = document.querySelector("#maxPrice");
 const wishlistCount = document.querySelector("#wishlistCount");
 
 const sampleCategories = [
-  { id: "", name: "" },
-  { id: "", name: "" },
-  { id: "", name: "" }
+  { id: 1, name: "Phones" },
+  { id: 2, name: "Laptops" },
+  { id: 3, name: "Accessories" },
 ];
 
 const sampleProducts = [
   {
-    id: "",
-    name: "",
-    image: "",
-    categoryId: "",
-    price: ,
-    description: "",
-    stock: 
+    id: 1,
+    name: "iPhone 17",
+    image:
+      "https://2b.com.eg/media/catalog/product/cache/661473ab953cdcdf4c3b607144109b90/m/a/ma218_1.jpg",
+    categoryId: 1,
+    price: 1200,
+    description:
+      "The latest iPhone with stunning display and powerful performance.",
+    stock: 5,
   },
   {
-    id: "",
-    name: "",
-    image: "",
-    categoryId: "",
-    price: ,
-    description: "",
-    stock:
+    id: 2,
+    name: "Samsung Galaxy S25",
+    image:
+      "https://m.media-amazon.com/images/I/61jcNsSidiL._AC_UF894,1000_QL80_.jpg",
+    categoryId: 1,
+    price: 950,
+    description:
+      "High-end Samsung smartphone with amazing camera and battery life.",
+    stock: 8,
   },
   {
-    id: "",
-    name: "",
-    image: "",
-    categoryId: "",
-    price: ,
-    description: "",
-    stock: 
+    id: 3,
+    name: "MacBook Pro M4",
+    image:
+      "https://macfinder.co.uk/wp-content/uploads/2023/12/img-MacBook-Pro-Retina-16-Inch-24323-scaled.jpg",
+    categoryId: 2,
+    price: 2200,
+    description: "Powerful MacBook with M4 chip, perfect for professionals.",
+    stock: 3,
   },
   {
-    id: "",
-    name: "",
-    image: "",
-    categoryId: "cat-2",
-    price: ,
-    description: "",
-    stock: 
+    id: 4,
+    name: "USB-C Charger",
+    image:
+      "https://m.media-amazon.com/images/I/61UR3mS+GhL._AC_UF894,1000_QL80_.jpg",
+    categoryId: 3,
+    price: 25,
+    description: "Fast USB-C charger compatible with all modern devices.",
+    stock: 50,
   },
-  {
-    id: "",
-    name: "",
-    image: "",
-    categoryId: "",
-    price: ,
-    description: "",
-    stock: 
-  }
 ];
 
 function loadData() {
   const storedCategories = localStorage.getItem(CATEGORIES_KEY);
   const storedProducts = localStorage.getItem(PRODUCTS_KEY);
 
-  categories = storedCategories ? JSON.parse(storedCategories) : sampleCategories;
+  categories = storedCategories
+    ? JSON.parse(storedCategories)
+    : sampleCategories;
   products = storedProducts ? JSON.parse(storedProducts) : sampleProducts;
 
   localStorage.setItem(CATEGORIES_KEY, JSON.stringify(categories));
@@ -197,7 +195,9 @@ function buildProductCard(item) {
   const updateButtonState = () => {
     const inWishlist = isInWishlist(item.id);
     button.classList.toggle("in-wishlist", inWishlist);
-    button.textContent = inWishlist ? "Remove from wishlist" : "Add to wishlist";
+    button.textContent = inWishlist
+      ? "Remove from wishlist"
+      : "Add to wishlist";
   };
 
   button.addEventListener("click", () => {

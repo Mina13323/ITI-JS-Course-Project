@@ -82,20 +82,34 @@ var ERR_PASSWORD = "Password must be at least 6 characters.";
 //  DataBase Initialization
 // ===========================
 (function () {
-  if (!localStorage.getItem(USERS_KEY)) {
-    // pre-initialize with admin
-    localStorage.setItem(
-      USERS_KEY,
-      JSON.stringify([
-        {
-          id: 1,
-          name: "Admin",
-          email: "admin@test.com",
-          password: "123456",
-          role: ADMIN,
-        },
-      ]),
-    );
+  // Get existing users or empty array
+  var existingUsers = [];
+  try {
+    existingUsers = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+  } catch (e) {
+    existingUsers = [];
+  }
+
+  // Check if admin account exists
+  var adminExists = false;
+  for (var i = 0; i < existingUsers.length; i++) {
+    if (existingUsers[i].email === "admin@test.com") {
+      adminExists = true;
+      break;
+    }
+  }
+
+  // If admin doesn't exist, add it
+  if (!adminExists) {
+    existingUsers.push({
+      id: 1,
+      name: "Admin",
+      email: "admin@test.com",
+      password: "123456",
+      role: ADMIN,
+    });
+    localStorage.setItem(USERS_KEY, JSON.stringify(existingUsers));
+    console.log("Admin account restored!");
   }
   if (!localStorage.getItem(PRODUCTS_KEY)) {
     localStorage.setItem(PRODUCTS_KEY, JSON.stringify([]));

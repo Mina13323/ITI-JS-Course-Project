@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="../shared/shared.css" />
+    <style>
+      .cart-layout {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: 32px;
+      }
+
+      .cart-items-section {
+        background: var(--white);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .cart-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .cart-item {
+        display: flex;
+        gap: 20px;
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--border);
+        transition: var(--transition);
+      }
+
+      .cart-item:hover {
+        background: var(--light);
+      }
+
+      .cart-item:last-child {
+        border-bottom: none;
+      }
+
+      .cart-item-image {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: var(--radius);
+      }
+
+      .cart-item-details {
+        flex: 1;
+      }
+
+      .cart-item-details h3 {
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+      }
+
+      .cart-item-details p {
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin-bottom: 12px;
+      }
+
+      .cart-item-price {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      .cart-item-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: space-between;
+      }
+
+      .quantity-control {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .quantity-control input {
+        width: 60px;
+        text-align: center;
+        padding: 8px;
+        border: 2px solid var(--border);
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+      }
+
+      .remove-btn {
+        background: none;
+        border: none;
+        color: var(--danger);
+        cursor: pointer;
+        font-size: 0.9rem;
+        padding: 8px;
+        transition: var(--transition);
+      }
+
+      .remove-btn:hover {
+        text-decoration: underline;
+      }
+
+      .stock-warning {
+        background: rgba(245, 158, 11, 0.1);
+        color: #b45309;
+        padding: 4px 12px;
+        border-radius: var(--radius-full);
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      .stock-error {
+        background: rgba(239, 68, 68, 0.1);
+        color: #b91c1c;
+        padding: 4px 12px;
+        border-radius: var(--radius-full);
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      .cart-summary {
+        background: var(--white);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+        padding: 24px;
+        height: fit-content;
+        position: sticky;
+        top: 96px;
+      }
+
+      .summary-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        color: var(--muted);
+      }
+
+      .summary-total {
+        display: flex;
+        justify-content: space-between;
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 2px solid var(--border);
+      }
+
+      .empty-cart {
+        text-align: center;
+        padding: 60px 24px;
+      }
+
+      .empty-cart-icon {
+        font-size: 4rem;
+        margin-bottom: 16px;
+      }
+
+      @media (max-width: 900px) {
+        .cart-layout {
+          grid-template-columns: 1fr;
+        }
+
+        .cart-summary {
+          position: static;
+        }
+
+        .cart-item {
+          flex-direction: column;
+        }
+
+        .cart-item-image {
+          width: 100%;
+          height: 150px;
+        }
+
+        .cart-item-actions {
+          flex-direction: row;
+          margin-top: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="nav">
+      <div class="nav-brand">
+        <i class="fa-solid fa-cart-shopping"></i> E-Commerce
+      </div>
+      <div class="nav-links">
+        <a href="../index.html" class="nav-link">Home</a>
+        <a href="products.html" class="nav-link">Products</a>
+        <a href="cart.html" class="nav-link active"
+          ><i class="fa-solid fa-cart-shopping"></i> Cart
+          <span
+            id="navCartCount"
+            class="badge badge-info"
+            style="padding: 2px 6px; font-size: 0.7rem; display: none"
+            >0</span
+          ></a
+        >
+        <a
+          href="orders.html"
+          class="nav-link auth-required"
+          style="display: none"
+          >My Orders</a
+        >
+        <a
+          href="returns.html"
+          class="nav-link auth-required"
+          style="display: none"
+          >Returns</a
+        >
+        <a href="../auth/login-register.html" class="nav-link" id="loginLink"
+          >Login</a
+        >
+        <a href="#" class="nav-link logout" id="logoutBtn" style="display: none"
+          >Logout</a
+        >
+      </div>
+    </nav>
+
+    <main class="container">
+      <div class="page-header">
+        <h1 class="page-title">Shopping Cart</h1>
+        <p class="page-subtitle">Review your items before checkout.</p>
+      </div>
+
+      <div class="cart-layout">
+        <!-- Cart Items -->
+        <section class="cart-items-section">
+          <div class="cart-header">
+            <h2>Your Items</h2>
+          </div>
+          <div id="cartItems">
+            <div class="empty-cart">
+              <div class="empty-cart-icon">
+                <i class="fa-solid fa-cart-shopping"></i>
+              </div>
+              <h3>Your cart is empty</h3>
+              <p class="text-muted mb-2">
+                Looks like you haven't added any items yet.
+              </p>
+              <a href="products.html" class="btn btn-primary mt-2"
+                >Start Shopping</a
+              >
+            </div>
+          </div>
+        </section>
+
+        <!-- Order Summary -->
+        <aside class="cart-summary">
+          <h3 class="summary-title">Order Summary</h3>
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span id="subtotal">$0.00</span>
+          </div>
+          <div class="summary-row">
+            <span>Shipping</span>
+            <span style="color: var(--success)">Free</span>
+          </div>
+          <div class="summary-total">
+            <span>Total</span>
+            <span id="totalAmount">$0.00</span>
+          </div>
+
+          <button
+            class="btn btn-primary btn-block mt-3 btn-confirm"
+            onclick="placeOrder()"
+          >
+            Place Order (Cash)
+          </button>
+
+          <div id="paypal-section" class="mt-2" style="display: none">
+            <p class="text-center text-muted mb-1">or pay with</p>
+            <div id="paypal-button-container"></div>
+          </div>
+
+          <button
+            class="btn btn-outline btn-block mt-2"
+            onclick="continueShopping()"
+          >
+            Continue Shopping
+          </button>
+        </aside>
+      </div>
+    </main>
+
+    <!-- Hidden table for compatibility -->
+    <table id="ProductsTable" style="display: none">
+      <tbody></tbody>
+    </table>
+
+    <!-- Firebase SDK -->
+    <!-- Firebase SDK -->
+    <script src="../shared/env.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="cart.js"></script>
+
+    <script>
+      // Override renderCart for new UI
+      var originalRenderCart = renderCart;
+      renderCart = function () {
+        var cart = getCart();
+        var cartItemsContainer = document.getElementById("cartItems");
+        var subtotalEl = document.getElementById("subtotal");
+        var totalEl = document.getElementById("totalAmount");
+
+        if (cart.length === 0) {
+          cartItemsContainer.innerHTML =
+            '<div class="empty-cart"><div class="empty-cart-icon"><i class="fa-solid fa-cart-shopping"></i></div><h3>Your cart is empty</h3><p class="text-muted mb-2">Looks like you haven\'t added any items yet.</p><a href="products.html" class="btn btn-primary mt-2">Start Shopping</a></div>';
+          subtotalEl.textContent = "$0.00";
+          totalEl.textContent = "$0.00";
+          document.querySelector(".btn-confirm").disabled = true;
+          document.querySelector(".btn-confirm").style.opacity = "0.5";
+          return;
+        }
+
+        var html = "";
+        var subtotal = 0;
+        var hasErrors = false;
+
+        for (var i = 0; i < cart.length; i++) {
+          var item = cart[i];
+          var product = getProduct(item.productId);
+
+          if (!product) continue;
+
+          var itemTotal = product.price * item.quantity;
+          subtotal += itemTotal;
+
+          var stockStatus = "";
+          if (product.stock === 0) {
+            stockStatus = '<span class="stock-error">Out of stock</span>';
+            hasErrors = true;
+          } else if (item.quantity > product.stock) {
+            stockStatus =
+              '<span class="stock-warning">Only ' +
+              product.stock +
+              " available</span>";
+            hasErrors = true;
+          }
+
+          html += '<div class="cart-item">';
+          html +=
+            '<img src="' +
+            product.image +
+            '" alt="" class="cart-item-image" onerror="this.src=\'https://via.placeholder.com/100\'">';
+          html += '<div class="cart-item-details">';
+          html += "<h3>" + product.name + "</h3>";
+          html +=
+            "<p>" +
+            (product.description.length > 80
+              ? product.description.substring(0, 80) + "..."
+              : product.description) +
+            "</p>";
+          html += stockStatus;
+          html += "</div>";
+          html += '<div class="cart-item-actions">';
+          html +=
+            '<span class="cart-item-price">$' +
+            itemTotal.toFixed(2) +
+            "</span>";
+          html += '<div class="quantity-control">';
+          html +=
+            '<input type="number" value="' +
+            item.quantity +
+            '" min="1" max="' +
+            product.stock +
+            '" onchange="changeQuantity(this, \'' +
+            product.id +
+            "')\">";
+          html += "</div>";
+          html +=
+            '<button class="remove-btn" onclick="removeProduct(\'' +
+            product.id +
+            "')\">Remove</button>";
+          html += "</div>";
+          html += "</div>";
+        }
+
+        cartItemsContainer.innerHTML = html;
+        subtotalEl.textContent = "$" + subtotal.toFixed(2);
+        totalEl.textContent = "$" + subtotal.toFixed(2);
+
+        var confirmBtn = document.querySelector(".btn-confirm");
+        if (hasErrors) {
+          confirmBtn.disabled = true;
+          confirmBtn.style.opacity = "0.5";
+          confirmBtn.title = "Fix stock issues to continue";
+        }
+      };
+
+      // Start
+      updateCartDisplay();
+      checkAuthState();
+      updateNavCartCount();
+
+      function checkAuthState() {
+        var currentUser = localStorage.getItem("currentUser");
+        var authLinks = document.querySelectorAll(".auth-required");
+        var loginLink = document.getElementById("loginLink");
+        var logoutBtn = document.getElementById("logoutBtn");
+
+        if (currentUser) {
+          for (var i = 0; i < authLinks.length; i++)
+            authLinks[i].style.display = "inline-flex";
+          if (loginLink) loginLink.style.display = "none";
+          if (logoutBtn) logoutBtn.style.display = "inline-flex";
+        } else {
+          for (var i = 0; i < authLinks.length; i++)
+            authLinks[i].style.display = "none";
+          if (loginLink) loginLink.style.display = "inline-flex";
+          if (logoutBtn) logoutBtn.style.display = "none";
+        }
+      }
+
+      function updateNavCartCount() {
+        var cart = JSON.parse(localStorage.getItem("cart")) || [];
+        var count = 0;
+        for (var i = 0; i < cart.length; i++) count += cart[i].quantity;
+        var badge = document.getElementById("navCartCount");
+        if (badge) {
+          badge.textContent = count;
+          badge.style.display = count > 0 ? "inline-flex" : "none";
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Details</title>
+    <link rel="stylesheet" href="../shared/shared.css" />
+    <style>
+      .product-detail-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 48px;
+        margin-bottom: 48px;
+      }
+
+      .product-image-section img {
+        width: 100%;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+      }
+
+      .product-info-section h1 {
+        font-size: 2rem;
+        margin-bottom: 16px;
+      }
+
+      .product-price {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 16px;
+      }
+
+      .product-description {
+        color: var(--muted);
+        line-height: 1.8;
+        margin-bottom: 24px;
+      }
+
+      .product-stock {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: var(--radius-full);
+        font-weight: 600;
+        margin-bottom: 24px;
+      }
+
+      .stock-available {
+        background: rgba(16, 185, 129, 0.1);
+        color: #047857;
+      }
+
+      .stock-low {
+        background: rgba(245, 158, 11, 0.1);
+        color: #b45309;
+      }
+
+      .stock-out {
+        background: rgba(239, 68, 68, 0.1);
+        color: #b91c1c;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .reviews-section {
+        background: var(--white);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+        padding: 32px;
+      }
+
+      .reviews-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 32px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .average-rating {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .big-rating {
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--dark);
+      }
+
+      .rating-details p {
+        color: var(--muted);
+      }
+
+      .review-form-section {
+        background: var(--light);
+        border-radius: var(--radius);
+        padding: 24px;
+        margin-bottom: 32px;
+      }
+
+      .star-rating-input {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+
+      .star-rating-input .star {
+        font-size: 2rem;
+        cursor: pointer;
+        color: var(--border);
+        transition: var(--transition);
+      }
+
+      .star-rating-input .star:hover,
+      .star-rating-input .star.active {
+        color: #f59e0b;
+      }
+
+      .reviews-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      @media (max-width: 900px) {
+        .product-detail-layout {
+          grid-template-columns: 1fr;
+        }
+
+        .action-buttons {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="nav">
+      <div class="nav-brand">
+        <i class="fa-solid fa-cart-shopping"></i> E-Commerce
+      </div>
+      <div class="nav-links">
+        <a href="../index.html" class="nav-link">Home</a>
+        <a href="products.html" class="nav-link">Products</a>
+        <a href="cart.html" class="nav-link">Cart</a>
+        <a href="orders.html" class="nav-link">My Orders</a>
+        <a href="returns.html" class="nav-link">Returns</a>
+        <a href="#" class="nav-link logout" id="logoutBtn">Logout</a>
+      </div>
+    </nav>
+
+    <main class="container">
+      <!-- Product Detail -->
+      <div class="product-detail-layout" id="productDetail">
+        <div class="product-image-section">
+          <img src="https://via.placeholder.com/500x400" alt="Loading..." />
+        </div>
+        <div class="product-info-section">
+          <p class="text-muted">Loading product details...</p>
+        </div>
+      </div>
+
+      <!-- Reviews Section -->
+      <section class="reviews-section">
+        <div class="reviews-header">
+          <h2>Customer Reviews</h2>
+          <div class="average-rating" id="averageRating">
+            <span class="big-rating">0.0</span>
+            <div class="rating-details">
+              <div class="stars-display"></div>
+              <p>0 reviews</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review Form -->
+        <div class="review-form-section review-form">
+          <h3 style="margin-bottom: 16px">Write a Review</h3>
+          <p class="form-label">Your Rating</p>
+          <div class="star-rating-input" id="starRating">
+            <span class="star" onclick="selectRating(1)"
+              ><i class="fa-solid fa-star"></i
+            ></span>
+            <span class="star" onclick="selectRating(2)"
+              ><i class="fa-solid fa-star"></i
+            ></span>
+            <span class="star" onclick="selectRating(3)"
+              ><i class="fa-solid fa-star"></i
+            ></span>
+            <span class="star" onclick="selectRating(4)"
+              ><i class="fa-solid fa-star"></i
+            ></span>
+            <span class="star" onclick="selectRating(5)"
+              ><i class="fa-solid fa-star"></i
+            ></span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Your Review</label>
+            <textarea
+              class="form-control"
+              id="reviewText"
+              rows="4"
+              placeholder="Share your experience with this product... (min 10 characters)"
+            ></textarea>
+            <p class="form-hint">Minimum 10 characters required</p>
+          </div>
+          <button class="btn btn-primary" onclick="submitReview()">
+            Submit Review
+          </button>
+        </div>
+
+        <!-- Reviews List -->
+        <div class="reviews-list" id="reviewsList">
+          <p class="text-center text-muted">Loading reviews...</p>
+        </div>
+      </section>
+    </main>
+
+    <!-- Firebase SDK -->
+    <!-- Firebase SDK -->
+    <script src="../shared/env.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="product-detail.js"></script>
+
+    <script>
+      // Override renderProductDetail for new UI
+      var originalRenderProductDetail = renderProductDetail;
+      renderProductDetail = function (product) {
+        var isOutOfStock = product.stock <= 0;
+
+        var stockClass = "stock-available";
+        var stockText = product.stock + " in stock";
+        if (isOutOfStock) {
+          stockClass = "stock-out";
+          stockText = "Out of Stock";
+        } else if (product.stock < 5) {
+          stockClass = "stock-low";
+          stockText = "Only " + product.stock + " left!";
+        }
+
+        var cartButton = isOutOfStock
+          ? '<button class="btn btn-primary btn-lg" disabled style="opacity:0.5;">Out of Stock</button>'
+          : '<button class="btn btn-primary btn-lg" onclick="addToCart()">Add to Cart</button>';
+
+        document.getElementById("productDetail").innerHTML =
+          '<div class="product-image-section">' +
+          '<img src="' +
+          product.image +
+          '" alt="' +
+          product.name +
+          '" onerror="this.src=\'https://via.placeholder.com/500x400\'">' +
+          "</div>" +
+          '<div class="product-info-section">' +
+          '<a href="products.html" class="text-muted" style="display:inline-block;margin-bottom:16px;"><i class="fa-solid fa-arrow-left"></i> Back to Products</a>' +
+          "<h1>" +
+          product.name +
+          "</h1>" +
+          '<p class="product-price">$' +
+          product.price.toFixed(2) +
+          "</p>" +
+          '<span class="product-stock ' +
+          stockClass +
+          '">' +
+          stockText +
+          "</span>" +
+          '<p class="product-description">' +
+          product.description +
+          "</p>" +
+          '<div class="action-buttons">' +
+          cartButton +
+          '<button class="btn btn-outline btn-lg" onclick="window.history.back()">Go Back</button>' +
+          "</div>" +
+          "</div>";
+      };
+    </script>
+  </body>
+</html>

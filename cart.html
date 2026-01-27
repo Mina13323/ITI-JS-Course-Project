@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart Shopping</title>
+    <!-- <link rel="stylesheet" href="../style.css"> -->
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table thead {
+            background-color: #007bff;
+            color: white;
+        }
+
+        table th,
+        table td {
+            padding: 10px 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        img {
+            height: 50px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="box">
+        <table id="ProductsTable">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Edit Quantity</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+
+            <tbody></tbody>
+        </table>
+        <div id="totalAmount"></div>
+        <div class="cart-actions">
+            <button class="btn-back" onclick="continueShopping()">back</button>
+
+            <button class="btn-confirm" onclick="placeOrder()">confirm</button>
+        </div>
+    </div>
+
+
+    <script src="cart.js"></script>
+</body>
+
+</html>

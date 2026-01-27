@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - E-Commerce</title>
+    <link rel="stylesheet" href="../shared/shared.css" />
+    <style>
+      .admin-layout {
+        display: flex;
+        min-height: calc(100vh - 64px);
+      }
+
+      .sidebar {
+        width: 250px;
+        background: var(--white);
+        border-right: 1px solid var(--border);
+        padding: 24px 0;
+        position: sticky;
+        top: 64px;
+        height: calc(100vh - 64px);
+      }
+
+      .sidebar-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 24px;
+        color: var(--muted);
+        font-weight: 500;
+        transition: var(--transition);
+      }
+
+      .sidebar-link:hover {
+        background: var(--light);
+        color: var(--primary);
+      }
+
+      .sidebar-link.active {
+        background: rgba(99, 102, 241, 0.1);
+        color: var(--primary);
+        border-right: 3px solid var(--primary);
+      }
+
+      .main-content {
+        flex: 1;
+        padding: 32px;
+        background: var(--light);
+      }
+
+      .welcome-banner {
+        background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
+        color: var(--white);
+        padding: 40px;
+        border-radius: var(--radius-lg);
+        margin-bottom: 32px;
+      }
+
+      .welcome-banner h1 {
+        font-size: 2rem;
+        margin-bottom: 8px;
+      }
+
+      .welcome-banner p {
+        opacity: 0.9;
+      }
+
+      .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-top: 24px;
+      }
+
+      .quick-action-btn {
+        background: rgba(255, 255, 255, 0.2);
+        color: var(--white);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 12px 20px;
+        border-radius: var(--radius);
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        text-align: center;
+        display: block;
+      }
+
+      .quick-action-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        color: var(--white);
+        transform: translateY(-2px);
+      }
+
+      .recent-section {
+        background: var(--white);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+        margin-bottom: 24px;
+      }
+
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          display: none;
+        }
+
+        .welcome-banner {
+          padding: 24px;
+        }
+
+        .welcome-banner h1 {
+          font-size: 1.5rem;
+        }
+
+        .quick-actions {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="nav">
+      <div class="nav-brand">
+        <i class="fa-solid fa-cart-shopping"></i> E-Commerce <span>Admin</span>
+      </div>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link active">Dashboard</a>
+        <a href="products.html" class="nav-link">Products</a>
+        <a href="categories.html" class="nav-link">Categories</a>
+        <a href="orders.html" class="nav-link">Orders</a>
+        <a href="reviews.html" class="nav-link">Reviews</a>
+        <a href="#" class="nav-link logout" id="logoutBtn">Logout</a>
+      </div>
+    </nav>
+
+    <div class="admin-layout">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <a href="index.html" class="sidebar-link active"
+          ><i class="fa-solid fa-chart-simple"></i> Dashboard</a
+        >
+        <a href="products.html" class="sidebar-link"
+          ><i class="fa-solid fa-box-open"></i> Products</a
+        >
+        <a href="categories.html" class="sidebar-link"
+          ><i class="fa-solid fa-tags"></i> Categories</a
+        >
+        <a href="orders.html" class="sidebar-link"
+          ><i class="fa-solid fa-clipboard-list"></i> Orders</a
+        >
+        <a href="reviews.html" class="sidebar-link"
+          ><i class="fa-solid fa-star"></i> Reviews</a
+        >
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Welcome Banner -->
+        <div class="welcome-banner">
+          <h1>Welcome back, Admin! <i class="fa-solid fa-hand"></i></h1>
+          <p>Here's what's happening with your store today.</p>
+          <div class="quick-actions">
+            <a href="products.html" class="quick-action-btn"
+              ><i class="fa-solid fa-plus"></i> Add Product</a
+            >
+            <a href="orders.html" class="quick-action-btn"
+              ><i class="fa-solid fa-clipboard-list"></i> View Orders</a
+            >
+            <a href="reviews.html" class="quick-action-btn"
+              ><i class="fa-solid fa-star"></i> Manage Reviews</a
+            >
+          </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon primary">
+              <i class="fa-solid fa-box-open"></i>
+            </div>
+            <div class="stat-info">
+              <h3 id="productCount">0</h3>
+              <p>Total Products</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon success">
+              <i class="fa-solid fa-tags"></i>
+            </div>
+            <div class="stat-info">
+              <h3 id="categoryCount">0</h3>
+              <p>Categories</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon warning">
+              <i class="fa-solid fa-clipboard-list"></i>
+            </div>
+            <div class="stat-info">
+              <h3 id="pendingOrders">0</h3>
+              <p>Pending Orders</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon danger"><i class="fa-solid fa-star"></i></div>
+            <div class="stat-info">
+              <h3 id="reviewCount">0</h3>
+              <p>Reviews</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="recent-section">
+          <div class="section-header">
+            <h2 class="section-title">Recent Orders</h2>
+            <a href="orders.html" class="btn btn-sm btn-outline">View All</a>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Customer</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="recentOrdersBody">
+                <tr>
+                  <td colspan="5" class="text-center">Loading...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Low Stock Products -->
+        <div class="recent-section">
+          <div class="section-header">
+            <h2 class="section-title">Low Stock Alert</h2>
+            <a href="products.html" class="btn btn-sm btn-outline"
+              >Manage Products</a
+            >
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Stock</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="lowStockBody">
+                <tr>
+                  <td colspan="3" class="text-center">Loading...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="../shared/env.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <script>
+      // Firebase Config
+      var firebaseConfig = window.FIREBASE_CONFIG;
+      if (!firebaseConfig) {
+        console.error(
+          "Firebase config not found! Make sure shared/env.js is loaded.",
+        );
+      }
+      firebase.initializeApp(firebaseConfig);
+      var db = firebase.firestore();
+
+      // Check admin access
+      var currentUser = JSON.parse(localStorage.getItem("currentUser"));
+      if (!currentUser || currentUser.role !== "admin") {
+        alert("Access denied. Admins only.");
+        window.location.href = "../auth/login-register.html";
+      }
+
+      // Load dashboard data
+      function loadDashboard() {
+        // Load products
+        db.collection("products")
+          .get()
+          .then(function (snapshot) {
+            var products = [];
+            var lowStock = [];
+            snapshot.forEach(function (doc) {
+              var p = doc.data();
+              p.id = doc.id;
+              products.push(p);
+              if (p.stock <= 5) {
+                lowStock.push(p);
+              }
+            });
+            document.getElementById("productCount").textContent =
+              products.length;
+            renderLowStock(lowStock);
+          });
+
+        // Load categories
+        db.collection("categories")
+          .get()
+          .then(function (snapshot) {
+            document.getElementById("categoryCount").textContent =
+              snapshot.size;
+          });
+
+        // Load orders
+        db.collection("orders")
+          .get()
+          .then(function (snapshot) {
+            var orders = [];
+            var pendingCount = 0;
+            snapshot.forEach(function (doc) {
+              var o = doc.data();
+              o.id = doc.id;
+              orders.push(o);
+              if (o.status === "pending") pendingCount++;
+            });
+            document.getElementById("pendingOrders").textContent = pendingCount;
+            renderRecentOrders(orders);
+          });
+
+        // Load reviews
+        db.collection("reviews")
+          .get()
+          .then(function (snapshot) {
+            document.getElementById("reviewCount").textContent = snapshot.size;
+          });
+      }
+
+      function renderRecentOrders(orders) {
+        var tbody = document.getElementById("recentOrdersBody");
+
+        if (orders.length === 0) {
+          tbody.innerHTML =
+            '<tr><td colspan="5" class="text-center text-muted">No orders yet</td></tr>';
+          return;
+        }
+
+        // Sort by date and take last 5
+        orders.sort(function (a, b) {
+          return new Date(b.date) - new Date(a.date);
+        });
+        var recent = orders.slice(0, 5);
+
+        var html = "";
+        for (var i = 0; i < recent.length; i++) {
+          var order = recent[i];
+          var date = new Date(order.date).toLocaleDateString();
+          var statusClass =
+            order.status === "confirmed"
+              ? "badge-confirmed"
+              : order.status === "rejected"
+                ? "badge-rejected"
+                : "badge-pending";
+
+          html += "<tr>";
+          html += "<td>#" + order.id.substring(0, 8) + "</td>";
+          html += "<td>" + (order.customerName || "Customer") + "</td>";
+          html += "<td>$" + order.total.toFixed(2) + "</td>";
+          html +=
+            '<td><span class="badge ' +
+            statusClass +
+            '">' +
+            order.status +
+            "</span></td>";
+          html += "<td>" + date + "</td>";
+          html += "</tr>";
+        }
+        tbody.innerHTML = html;
+      }
+
+      function renderLowStock(products) {
+        var tbody = document.getElementById("lowStockBody");
+
+        if (products.length === 0) {
+          tbody.innerHTML =
+            '<tr><td colspan="3" class="text-center text-success">All products well stocked! <i class="fa-solid fa-check"></i></td></tr>';
+          return;
+        }
+
+        var html = "";
+        for (var i = 0; i < products.length; i++) {
+          var p = products[i];
+          var statusClass = p.stock === 0 ? "badge-rejected" : "badge-pending";
+          var statusText = p.stock === 0 ? "Out of Stock" : "Low Stock";
+
+          html += "<tr>";
+          html += "<td>" + p.name + "</td>";
+          html += "<td>" + p.stock + "</td>";
+          html +=
+            '<td><span class="badge ' +
+            statusClass +
+            '">' +
+            statusText +
+            "</span></td>";
+          html += "</tr>";
+        }
+        tbody.innerHTML = html;
+      }
+
+      // Logout
+      document
+        .getElementById("logoutBtn")
+        .addEventListener("click", function (e) {
+          e.preventDefault();
+          localStorage.removeItem("currentUser");
+          window.location.href = "../index.html";
+        });
+
+      loadDashboard();
+    </script>
+  </body>
+</html>
